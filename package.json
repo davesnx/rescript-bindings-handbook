@@ -1,0 +1,17 @@
+{
+  "name": "@davesnx/reason-bindings-to-js",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "http-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "davesnx <dsnxmoreno@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "gh-pages": "^3.1.0",
+    "http-server": "^0.12.3",
+    "prettier": "^2.1.1"
+  }
+}
