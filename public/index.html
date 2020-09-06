@@ -2,16 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>rescript bindings Handbook</title>
+    <title>ReScript Bindings Handbook</title>
     <link
       rel="stylesheet"
       href="https://raw.githubusercontent.com/caiogondim/superstylin/master/src/index.css"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" value="dark" />
-    <script
-      src="https://www.unpkg.com/highlightjs@9.16.2/highlight.pack.min.js"
-    ></script>
+    <script src="https://www.unpkg.com/highlightjs@9.16.2/highlight.pack.min.js"></script>
     <script>
       hljs.initHighlightingOnLoad();
     </script>
@@ -516,6 +514,7 @@
       td {
         padding: 0.5rem 0.5rem 0.5rem 0;
         margin: 0;
+        width: 50%;
       }
 
       th {
@@ -816,27 +815,6 @@
           padding-bottom: 75%;
         }
       }
-
-      .languages {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-
-      .body-left {
-        width: 48%;
-      }
-
-      .body-right {
-        width: 48%;
-      }
-
-      .title-re {
-      }
-
-      .title-js {
-      }
     </style>
 
     <section class="header__container">
@@ -850,7 +828,7 @@
         </p>
         <p>
           In order to get as maximum as possible from these examples, it's
-          recommended to have a vague notion about Reason/rescript types and
+          recommended to have a vague notion about Reason/ReScript types and
           TypeScript syntax.
         </p>
 
@@ -868,22 +846,88 @@
           <p class="description"></p>
         </div>
         <div class="section-body">
-          <div class="languages">
-            <div class="body-left js">
-              <h4 class="title-js">TypeScript</h4>
-              <pre><code class="typescript">function add(x: string, y: string): string {
-  return x + y;
-}</code></pre>
-            </div>
-
-            <div class="body-right reason">
-              <h4 class="title-re">rescript</h4>
-              <pre><code class="reason">@bs.val external add: (int, int) => int = ""
-
-let ret = f(a, b)
+          <table>
+            <caption>
+              JavaScript code we want to generate / ReScript bindings
+            </caption>
+            <thead>
+              <tr>
+                <th scope="column">JavaScript</th>
+                <th scope="column">ReScript</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code class="typescript">// Call global function
+add(1, 2)</code></pre>
+                </td>
+                <td>
+                  <pre><code class="reason">@bs.val external add: (int, int) => int = "add"
+add(1,2)
 </code></pre>
-            </div>
-          </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code class="typescript">// Create instance with `new`
+const car = new Car()</code></pre>
+                </td>
+                <td>
+                  <pre><code class="reason">type t
+@bs.new external createCar: unit => t = "Car"
+let car = createCar()
+</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code class="typescript">// Read property
+car.color</code></pre>
+                </td>
+                <td>
+                  <pre><code class="reason">@bs.get external mileage: t => int = "mileage"
+car->mileage
+</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code class="typescript">// Write property
+car.mileage = 1000</code></pre>
+                </td>
+                <td>
+                  <pre><code class="reason">@bs.set external setMileage: t => int => unit = "color"
+car->setMileage(1_000)
+</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code class="typescript">// Call function attached to object
+car.start()</code></pre>
+                </td>
+                <td>
+                  <pre><code class="reason">@bs.send external start: t => unit = "start"
+car->start
+</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code class="typescript">// `this`-based callbacks
+car.onStop = function(miles) {
+  this.mileage += miles;
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code class="reason">@bs.set external onStop: (t, @bs.this (t, int) => unit) => unit = "onStop"
+car->onStop(@bs.this(car, miles) => car->setMileage(car->mileage + miles))
+</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </main>
